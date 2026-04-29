@@ -32,7 +32,6 @@ margin:10px 0;
 border-radius:8px;
 border:2px solid #bfc9d1;
 font-size:16px;
-background:white;
 box-sizing:border-box;
 }
 
@@ -40,14 +39,13 @@ input:focus, textarea:focus{
 border:2px solid #2c3e50;
 }
 
-/* RESULT UI FIX */
+/* RESULT UI */
 .result{
 background:#ecf0f1;
 padding:12px;
 border-radius:8px;
 margin-top:10px;
 line-height:1.5;
-word-wrap:break-word;
 }
 
 /* BUTTON ROW */
@@ -85,6 +83,10 @@ background:#555;
 background:#e74c3c;
 }
 
+.backup{
+background:#25D366;
+}
+
 </style>
 </head>
 
@@ -92,7 +94,7 @@ background:#e74c3c;
 
 <h2>CSC Master Search</h2>
 
-<!-- ✅ TODAY INCOME -->
+<!-- 💰 INCOME -->
 <div class="container">
 <h3>Today's Income</h3>
 <p><b>Total: ₹ <span id="todayIncome">0</span></b></p>
@@ -120,6 +122,17 @@ background:#e74c3c;
 <button onclick="addService()">Add</button>
 </div>
 
+<!-- BACKUP -->
+<div class="container">
+<h3>Backup & Restore</h3>
+
+<button class="backup" onclick="backupWhatsApp()">Backup to WhatsApp</button>
+
+<textarea id="restoreBox" placeholder="Paste backup data here"></textarea>
+
+<button onclick="restoreFromText()">Restore Data</button>
+</div>
+
 <!-- RESULTS -->
 <div class="container">
 <h3>Search Results</h3>
@@ -140,7 +153,6 @@ function searchService(){
 let input = document.getElementById("search").value.toLowerCase();
 let output = "";
 
-/* SORT */
 let sorted = [...services].sort((a,b)=>
 (a.name||"").toLowerCase().localeCompare((b.name||"").toLowerCase())
 );
@@ -167,7 +179,7 @@ ${s.note ? `<br><b>Note:</b><br>${s.note}<br>` : ""}
 
 <div class="btn-row">
 <button class="small-btn" onclick="addIncome(${s.charge || 0})">Add ₹</button>
-<button class="small-btn" onclick="editService(${i})">Edit</button>
+<button class="small-btn" onclick="loadEdit(${i})">Edit</button>
 <button class="small-btn delete" onclick="deleteService(${i})">Delete</button>
 </div>
 
@@ -182,7 +194,7 @@ document.getElementById("output").innerHTML = output || "No service found";
 /* ADD */
 function addService(){
 
-let name = document.getElementById("newName").value.trim();
+let name = newName.value.trim();
 
 if(name===""){
 alert("Enter Service Name");
@@ -201,7 +213,7 @@ note:newNote.value
 });
 
 saveLocal();
-clearForm();
+clearAdd();
 searchService();
 }
 
@@ -214,13 +226,27 @@ searchService();
 }
 }
 
-/* EDIT (placeholder) */
-function editService(i){
-alert("Use your full edit section if needed");
+/* EDIT LOAD */
+function loadEdit(i){
+let s = services[i];
+
+newName.value = s.name;
+newKeywords.value = s.keywords;
+newDocuments.value = s.documents;
+newSteps.value = s.steps;
+newTime.value = s.time;
+newCharge.value = s.charge;
+newDownload.value = s.download;
+newNote.value = s.note;
+
+/* Remove old entry so user can update */
+services.splice(i,1);
+saveLocal();
+searchService();
 }
 
 /* CLEAR */
-function clearForm(){
+function clearAdd(){
 newName.value="";
 newKeywords.value="";
 newDocuments.value="";
@@ -231,10 +257,37 @@ newDownload.value="";
 newNote.value="";
 }
 
-/* =========================
-   💰 INCOME SYSTEM
-========================= */
+/* BACKUP */
+function backupWhatsApp(){
+let data = JSON.stringify(services);
+let message = encodeURIComponent("CSC Backup:\n" + data);
+window.open("https://wa.me/?text=" + message, "_blank");
+}
 
+/* RESTORE */
+function restoreFromText(){
+let text = document.getElementById("restoreBox").value;
+
+if(text.trim() === ""){
+alert("Paste backup data");
+return;
+}
+
+try{
+text = text.replace("CSC Backup:", "").trim();
+services = JSON.parse(text);
+
+saveLocal();
+searchService();
+
+alert("Data Restored Successfully");
+
+}catch(e){
+alert("Invalid backup data");
+}
+}
+
+/* 💰 INCOME SYSTEM */
 function getTodayKey(){
 let d = new Date();
 return "income_" + d.toISOString().slice(0,10);
@@ -280,4 +333,5 @@ loadIncome();
 </script>
 
 </body>
+</html>
 </html>
