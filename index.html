@@ -35,11 +35,6 @@ font-size:16px;
 box-sizing:border-box;
 }
 
-input:focus, textarea:focus{
-border:2px solid #2c3e50;
-}
-
-/* RESULT UI */
 .result{
 background:#ecf0f1;
 padding:12px;
@@ -62,7 +57,6 @@ font-size:14px;
 white-space:nowrap;
 }
 
-/* BUTTONS */
 button{
 padding:10px;
 margin-top:5px;
@@ -86,7 +80,6 @@ background:#e74c3c;
 .backup{
 background:#25D366;
 }
-
 </style>
 </head>
 
@@ -94,7 +87,7 @@ background:#25D366;
 
 <h2>CSC Master Search</h2>
 
-<!-- 💰 INCOME -->
+<!-- INCOME -->
 <div class="container">
 <h3>Today's Income</h3>
 <p><b>Total: ₹ <span id="todayIncome">0</span></b></p>
@@ -120,6 +113,24 @@ background:#25D366;
 <textarea id="newNote" placeholder="Notes"></textarea>
 
 <button onclick="addService()">Add</button>
+</div>
+
+<!-- EDIT -->
+<div class="container">
+<h3>Edit Service</h3>
+
+<input type="hidden" id="editIndex">
+
+<input id="editName" placeholder="Service Name">
+<input id="editKeywords" placeholder="Keywords">
+<input id="editDocuments" placeholder="Documents">
+<textarea id="editSteps" placeholder="Steps"></textarea>
+<input id="editTime" placeholder="Time">
+<input id="editCharge" placeholder="Charge ₹">
+<textarea id="editDownload" placeholder="Download Steps"></textarea>
+<textarea id="editNote" placeholder="Notes"></textarea>
+
+<button onclick="updateService()">Update Service</button>
 </div>
 
 <!-- BACKUP -->
@@ -217,6 +228,49 @@ clearAdd();
 searchService();
 }
 
+/* LOAD EDIT */
+function loadEdit(i){
+let s = services[i];
+
+editIndex.value = i;
+editName.value = s.name||"";
+editKeywords.value = s.keywords||"";
+editDocuments.value = s.documents||"";
+editSteps.value = s.steps||"";
+editTime.value = s.time||"";
+editCharge.value = s.charge||"";
+editDownload.value = s.download||"";
+editNote.value = s.note||"";
+}
+
+/* UPDATE */
+function updateService(){
+
+let i = editIndex.value;
+
+if(i===""){
+alert("Select service to edit");
+return;
+}
+
+services[i] = {
+name: editName.value.trim(),
+keywords: editKeywords.value,
+documents: editDocuments.value,
+steps: editSteps.value,
+time: editTime.value,
+charge: editCharge.value,
+download: editDownload.value,
+note: editNote.value
+};
+
+saveLocal();
+clearEdit();
+searchService();
+
+alert("Updated Successfully");
+}
+
 /* DELETE */
 function deleteService(i){
 if(confirm("Delete?")){
@@ -224,25 +278,6 @@ services.splice(i,1);
 saveLocal();
 searchService();
 }
-}
-
-/* EDIT LOAD */
-function loadEdit(i){
-let s = services[i];
-
-newName.value = s.name;
-newKeywords.value = s.keywords;
-newDocuments.value = s.documents;
-newSteps.value = s.steps;
-newTime.value = s.time;
-newCharge.value = s.charge;
-newDownload.value = s.download;
-newNote.value = s.note;
-
-/* Remove old entry so user can update */
-services.splice(i,1);
-saveLocal();
-searchService();
 }
 
 /* CLEAR */
@@ -257,6 +292,18 @@ newDownload.value="";
 newNote.value="";
 }
 
+function clearEdit(){
+editIndex.value="";
+editName.value="";
+editKeywords.value="";
+editDocuments.value="";
+editSteps.value="";
+editTime.value="";
+editCharge.value="";
+editDownload.value="";
+editNote.value="";
+}
+
 /* BACKUP */
 function backupWhatsApp(){
 let data = JSON.stringify(services);
@@ -266,7 +313,7 @@ window.open("https://wa.me/?text=" + message, "_blank");
 
 /* RESTORE */
 function restoreFromText(){
-let text = document.getElementById("restoreBox").value;
+let text = restoreBox.value;
 
 if(text.trim() === ""){
 alert("Paste backup data");
@@ -280,14 +327,14 @@ services = JSON.parse(text);
 saveLocal();
 searchService();
 
-alert("Data Restored Successfully");
+alert("Data Restored");
 
-}catch(e){
-alert("Invalid backup data");
+}catch{
+alert("Invalid data");
 }
 }
 
-/* 💰 INCOME SYSTEM */
+/* INCOME */
 function getTodayKey(){
 let d = new Date();
 return "income_" + d.toISOString().slice(0,10);
@@ -295,7 +342,7 @@ return "income_" + d.toISOString().slice(0,10);
 
 function loadIncome(){
 let total = localStorage.getItem(getTodayKey()) || 0;
-document.getElementById("todayIncome").innerText = total;
+todayIncome.innerText = total;
 }
 
 function addIncome(amount){
@@ -314,13 +361,12 @@ let key = getTodayKey();
 let current = parseFloat(localStorage.getItem(key)) || 0;
 
 current += amount;
-
 localStorage.setItem(key, current);
 loadIncome();
 }
 
 function resetIncome(){
-if(confirm("Reset today's income?")){
+if(confirm("Reset today?")){
 localStorage.setItem(getTodayKey(), 0);
 loadIncome();
 }
@@ -333,5 +379,4 @@ loadIncome();
 </script>
 
 </body>
-</html>
 </html>
