@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CSC Master Search Tool</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+font-family:Arial;
+background:#f4f6f9;
+padding:10px;
+}
+
+h2{
+text-align:center;
+color:#2c3e50;
+}
+
+.container{
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
+margin-bottom:15px;
+}
+
+input, textarea{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+border:2px solid #bfc9d1;
+font-size:16px;
+background:white;
+box-sizing:border-box;
+}
+
+input:focus, textarea:focus{
+border:2px solid #2c3e50;
+}
+
+/* RESULT UI FIX */
+.result{
+background:#ecf0f1;
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+line-height:1.5;
+word-wrap:break-word;
+}
+
+/* BUTTON ROW */
+.btn-row{
+display:flex;
+gap:8px;
+margin-top:10px;
+}
+
+.btn-row .small-btn{
+flex:1;
+padding:8px;
+font-size:14px;
+white-space:nowrap;
+}
+
+/* BUTTONS */
+button{
+padding:10px;
+margin-top:5px;
+width:100%;
+border:none;
+border-radius:5px;
+background:#2c3e50;
+color:white;
+font-size:15px;
+}
+
+.small-btn{
+width:auto;
+background:#555;
+}
+
+.delete{
+background:#e74c3c;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>CSC Master Search</h2>
+
+<!-- ✅ TODAY INCOME -->
+<div class="container">
+<h3>Today's Income</h3>
+<p><b>Total: ₹ <span id="todayIncome">0</span></b></p>
+<button onclick="resetIncome()">Reset Today</button>
+</div>
+
+<!-- SEARCH -->
+<div class="container">
+<input type="text" id="search" placeholder="Search service..." onkeyup="searchService()">
+</div>
+
+<!-- ADD -->
+<div class="container">
+<h3>Add Service</h3>
+
+<input id="newName" placeholder="Service Name">
+<input id="newKeywords" placeholder="Keywords">
+<input id="newDocuments" placeholder="Documents">
+<textarea id="newSteps" placeholder="Steps"></textarea>
+<input id="newTime" placeholder="Time">
+<input id="newCharge" placeholder="Charge ₹">
+<textarea id="newDownload" placeholder="Download Steps"></textarea>
+<textarea id="newNote" placeholder="Notes"></textarea>
+
+<button onclick="addService()">Add</button>
+</div>
+
+<!-- RESULTS -->
+<div class="container">
+<h3>Search Results</h3>
+<div id="output"></div>
+</div>
+
+<script>
+
+let services = JSON.parse(localStorage.getItem("services")) || [];
+
+function saveLocal(){
+localStorage.setItem("services", JSON.stringify(services));
+}
+
+/* SEARCH */
+function searchService(){
+
+let input = document.getElementById("search").value.toLowerCase();
+let output = "";
+
+/* SORT */
+let sorted = [...services].sort((a,b)=>
+(a.name||"").toLowerCase().localeCompare((b.name||"").toLowerCase())
+);
+
+sorted.forEach((s)=>{
+
+if((s.name||"").toLowerCase().includes(input) || 
+(s.keywords||"").toLowerCase().includes(input)){
+
+let i = services.indexOf(s);
+
+output += `
+<div class="result">
+
+<h3>${s.name}</h3>
+
+<b>Documents:</b><br>${s.documents||""}<br><br>
+<b>Steps:</b><br>${s.steps||""}<br><br>
+<b>Time:</b> ${s.time||""}<br>
+
+${s.charge ? `<b>Charge:</b> ₹${s.charge}<br>` : ""}
+${s.download ? `<br><b>Download:</b><br>${s.download}<br>` : ""}
+${s.note ? `<br><b>Note:</b><br>${s.note}<br>` : ""}
+
+<div class="btn-row">
+<button class="small-btn" onclick="addIncome(${s.charge || 0})">Add ₹</button>
+<button class="small-btn" onclick="editService(${i})">Edit</button>
+<button class="small-btn delete" onclick="deleteService(${i})">Delete</button>
+</div>
+
+</div>
+`;
+}
+});
+
+document.getElementById("output").innerHTML = output || "No service found";
+}
+
+/* ADD */
+function addService(){
+
+let name = document.getElementById("newName").value.trim();
+
+if(name===""){
+alert("Enter Service Name");
+return;
+}
+
+services.push({
+name,
+keywords:newKeywords.value,
+documents:newDocuments.value,
+steps:newSteps.value,
+time:newTime.value,
+charge:newCharge.value,
+download:newDownload.value,
+note:newNote.value
+});
+
+saveLocal();
+clearForm();
+searchService();
+}
+
+/* DELETE */
+function deleteService(i){
+if(confirm("Delete?")){
+services.splice(i,1);
+saveLocal();
+searchService();
+}
+}
+
+/* EDIT (placeholder) */
+function editService(i){
+alert("Use your full edit section if needed");
+}
+
+/* CLEAR */
+function clearForm(){
+newName.value="";
+newKeywords.value="";
+newDocuments.value="";
+newSteps.value="";
+newTime.value="";
+newCharge.value="";
+newDownload.value="";
+newNote.value="";
+}
+
+/* =========================
+   💰 INCOME SYSTEM
+========================= */
+
+function getTodayKey(){
+let d = new Date();
+return "income_" + d.toISOString().slice(0,10);
+}
+
+function loadIncome(){
+let total = localStorage.getItem(getTodayKey()) || 0;
+document.getElementById("todayIncome").innerText = total;
+}
+
+function addIncome(amount){
+
+if(!amount || amount == 0){
+let input = prompt("Enter amount ₹:");
+if(input === null) return;
+amount = parseFloat(input);
+if(isNaN(amount)){
+alert("Invalid amount");
+return;
+}
+}
+
+let key = getTodayKey();
+let current = parseFloat(localStorage.getItem(key)) || 0;
+
+current += amount;
+
+localStorage.setItem(key, current);
+loadIncome();
+}
+
+function resetIncome(){
+if(confirm("Reset today's income?")){
+localStorage.setItem(getTodayKey(), 0);
+loadIncome();
+}
+}
+
+/* LOAD */
+searchService();
+loadIncome();
+
+</script>
+
+</body>
+</html>
