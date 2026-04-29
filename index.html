@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="icon" href="icon-192.png">
+
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<link rel="manifest" href="manifest.json">
 <meta charset="UTF-8">
 <title>CSC Master Search Tool</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -377,6 +382,54 @@ searchService();
 loadIncome();
 
 </script>
+<!-- BACK BUTTON - LEFT ARROW (Same style as scroll top) -->
+<style>
+#backBtn {
+  position: fixed;
+  left: 20px;
+  bottom: 25px;
+  width: 55px;
+  height: 55px;
+  background-color: #f2f2f2;  /* off-white */
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
 
+#backBtn svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #000000;      /* BLACK arrow */
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hover effect */
+#backBtn:hover {
+  background-color: #e6e6e6;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+</style>
+
+<a href="main-landing-page.html" id="backBtn" title="Back">
+  <svg viewBox="0 0 24 24">
+    <!-- LEFT POINTING ARROW (same style as scroll button) -->
+    <path d="M15 6l-6 6 6 6" />
+  </svg>
+</a>
+  <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+    .then(() => console.log("Service Worker Registered"));
+}
+</script>
 </body>
 </html>
