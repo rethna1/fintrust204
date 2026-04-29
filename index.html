@@ -382,49 +382,69 @@ searchService();
 loadIncome();
 
 </script>
-<!-- BACK BUTTON - LEFT ARROW (Same style as scroll top) -->
+<!-- Scroll to Top Button (Off-white + Black Icon) -->
 <style>
-#backBtn {
+#scrollTopBtn {
   position: fixed;
-  left: 20px;
+  right: 20px;
   bottom: 25px;
   width: 55px;
   height: 55px;
-  background-color: #f2f2f2;  /* off-white */
+  background-color: #f8f8f8; /* Off-white */
   border: none;
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
 }
 
-#backBtn svg {
+#scrollTopBtn.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+#scrollTopBtn svg {
   width: 22px;
   height: 22px;
   fill: none;
-  stroke: #000000;      /* BLACK arrow */
+  stroke: #000000; /* BLACK arrow */
   stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-/* Hover effect */
-#backBtn:hover {
-  background-color: #e6e6e6;
+#scrollTopBtn:hover {
+  background-color: #e8e8e8;
   box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
 </style>
 
-<a href="main-landing-page.html" id="backBtn" title="Back">
+<button onclick="topFunction()" id="scrollTopBtn" title="Go to top">
   <svg viewBox="0 0 24 24">
-    <!-- LEFT POINTING ARROW (same style as scroll button) -->
-    <path d="M15 6l-6 6 6 6" />
+    <path d="M6 15l6-6 6 6" />
   </svg>
-</a>
+</button>
+
+<script>
+window.onscroll = function() {
+  let btn = document.getElementById("scrollTopBtn");
+  if (document.body.scrollTop > 150 || document.documentElement.scrollTop > 150) {
+    btn.classList.add("show");
+  } else {
+    btn.classList.remove("show");
+  }
+};
+
+function topFunction() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
   <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js")
