@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
+
+<div class="brand-row">
+    <div class="logo-circle">
+        <div class="logo-text">
+            <div class="fc">FC</div>
+            <div class="line1">FINTRUST</div>
+            <div class="line2">CREATIONS</div>
+        </div>
+    </div>
+
+    <h2 class="brand-title">FinTrust Creations</h2>
+</div>
+
 <head>
-  <link rel="icon" href="icon-192.png">
-
-<link rel="apple-touch-icon" href="icon-192.png">
-
-<link rel="manifest" href="manifest.json">
 <meta charset="UTF-8">
 <title>CSC Master Search Tool</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -85,12 +93,164 @@ background:#e74c3c;
 .backup{
 background:#25D366;
 }
+
+.title-section{
+    text-align:center;
+    margin-top:10px;
+    margin-bottom:25px;
+}
+
+.main-title{
+    font-size:32px;
+    font-weight:800;
+    color:#2c3e50;
+    margin-bottom:5px;
+    letter-spacing:0.5px;
+}
+
+.version-text{
+    font-size:15px;
+    color:#777;
+    margin-top:0;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    font-size:15px;
+    font-weight:500;
+    color:#666;
+    margin-top:0;
+    line-height:1.4;
+}
+
+.brand-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:15px 0;
+}
+
+/* LOGO CIRCLE */
+.logo-circle{
+    width:48px;
+    height:48px;
+    background:#1aa179;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* LOGO TEXT */
+.logo-text{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+}
+
+/* FC */
+.logo-text .fc{
+    font-size:14px;
+    font-weight:bold;
+    line-height:1;
+}
+
+/* FINTRUST */
+.logo-text .line1{
+    font-size:6px;
+    line-height:1;
+    margin:0;
+}
+
+/* CREATIONS */
+.logo-text .line2{
+    font-size:6px;
+    line-height:1;
+    margin:0;
+}
+
+/* HEADING */
+
+.brand-title{
+    font-size:20px;
+    font-weight:400;
+    color:#2c3e50;
+}
+
+.footer{
+    background:#f8f9fa;
+    padding:20px;
+    margin-top:30px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+
+.copyright{
+    text-align:center;
+    font-size:13px;
+    font-weight:600;
+    color:#444;
+    margin-bottom:15px;
+}
+
+.footer-text p{
+    text-align:justify;
+    font-size:13px;
+    color:#555;
+    line-height:1.8;
+    margin-bottom:15px;
+}
+
+.support{
+    text-align:center;
+    font-size:13px;
+    color:#444;
+    font-weight:600;
+    margin-top:10px;
+}
+
+body{
+    font-family:Arial;
+    background:#f4f6f9;
+    padding:10px;
+    max-width:700px;
+    margin:auto;
+}
+
+.info-box{
+    background:#eef5ff;
+    border-left:5px solid #3498db;
+    padding:15px;
+    margin-top:20px;
+    border-radius:10px;
+    font-size:13px;
+    color:#444;
+    line-height:1.8;
+    text-align:justify;
+}
+
 </style>
 </head>
 
 <body>
 
-<h2>CSC Master Search</h2>
+<div class="title-section">
+
+    <h1 class="main-title">
+        Smart Service Manager
+    </h1>
+
+    <p class="version-text">
+        Version 1.0
+    </p>
+
+    <p class="subtitle">
+        Service Search & Workflow Management Tool
+    </p>
+
+</div>
 
 <!-- INCOME -->
 <div class="container">
@@ -154,6 +314,58 @@ background:#25D366;
 <h3>Search Results</h3>
 <div id="output"></div>
 </div>
+
+<footer class="footer">
+
+<div class="copyright">
+© <span id="year"></span> FinTrust Creations. All Rights Reserved.
+</div>
+
+<div class="footer-text">
+
+<p>
+This application is an independent utility and productivity tool 
+created for educational, workflow management, and operational 
+assistance purposes only.
+</p>
+
+<p>
+Users are responsible for verifying all service procedures, 
+charges, rules, and government guidelines from official sources 
+before providing services to customers.
+</p>
+
+<div class="support">
+<b>Support:</b> 8590858767
+</div>
+
+</div>
+
+</footer>
+
+<script>
+document.getElementById("year").innerHTML = new Date().getFullYear();
+</script>
+
+<div class="info-box">
+
+<b>Important Information:</b><br><br>
+
+• This application is optimized for mobile devices and touch-screen usage.<br><br>
+
+• Data is stored locally in your browser/device storage using local storage technology.<br><br>
+
+• Please use the backup feature regularly to avoid data loss during device change, browser reset, or storage clearing.
+
+</div>
+
+<script>
+document.getElementById("year").innerHTML = new Date().getFullYear();
+</script>
+
+<script>
+document.getElementById("year").innerHTML = new Date().getFullYear();
+</script>
 
 <script>
 
@@ -382,6 +594,7 @@ searchService();
 loadIncome();
 
 </script>
+
 <!-- Scroll to Top Button (Off-white + Black Icon) -->
 <style>
 #scrollTopBtn {
@@ -445,11 +658,7 @@ function topFunction() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
-  <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js")
-    .then(() => console.log("Service Worker Registered"));
-}
-</script>
+
 </body>
 </html>
+
